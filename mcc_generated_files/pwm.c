@@ -62,8 +62,8 @@ void PWM_Initialize (void)
     PTCON = 0x8000;
     // PCLKDIV 64; 
     PTCON2 = 0x6;
-    // PTPER 0; 
-    PTPER = 0x0;
+    // PTPER 256; 
+    PTPER = 0x100;
     // SEVTCMP 0; 
     SEVTCMP = 0x0;
     // MDC 0; 
@@ -78,10 +78,10 @@ void PWM_Initialize (void)
     PWMCON2 = 0x200;
     // MDCS Primary; FLTIEN disabled; CAM Edge Aligned; DTC Positive dead time; TRGIEN disabled; XPRES disabled; ITB Master; IUE disabled; CLIEN disabled; MTBS disabled; DTCP disabled; 
     PWMCON3 = 0x0;
-    //FLTDAT PWM1L Low, PWM1H Low; SWAP disabled; OVRENH disabled; PENL disabled; PMOD disabled; OVRENL disabled; OSYNC disabled; POLL disabled; PENH disabled; CLDAT PWM1L Low, PWM1H Low; OVRDAT PWM1L Low, PWM1H Low; POLH disabled; 
-    __builtin_write_PWMSFR(&IOCON1, 0x0, &PWMKEY);
-    //FLTDAT PWM2L Low, PWM2H Low; SWAP disabled; OVRENH disabled; PENL disabled; PMOD disabled; OVRENL disabled; OSYNC disabled; POLL disabled; PENH disabled; CLDAT PWM2L Low, PWM2H Low; OVRDAT PWM2L Low, PWM2H Low; POLH disabled; 
-    __builtin_write_PWMSFR(&IOCON2, 0x0, &PWMKEY);
+    //FLTDAT PWM1L Low, PWM1H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD enabled; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM1L Low, PWM1H Low; OVRDAT PWM1L Low, PWM1H Low; POLH disabled; 
+    __builtin_write_PWMSFR(&IOCON1, 0xCC00, &PWMKEY);
+    //FLTDAT PWM2L Low, PWM2H Low; SWAP disabled; OVRENH disabled; PENL enabled; PMOD enabled; OVRENL disabled; OSYNC disabled; POLL disabled; PENH enabled; CLDAT PWM2L Low, PWM2H Low; OVRDAT PWM2L Low, PWM2H Low; POLH disabled; 
+    __builtin_write_PWMSFR(&IOCON2, 0xCC00, &PWMKEY);
     //FLTDAT PWM3L Low, PWM3H Low; SWAP disabled; OVRENH disabled; PENL disabled; PMOD disabled; OVRENL disabled; OSYNC disabled; POLL disabled; PENH disabled; CLDAT PWM3L Low, PWM3H Low; OVRDAT PWM3L Low, PWM3H Low; POLH disabled; 
     __builtin_write_PWMSFR(&IOCON3, 0x0, &PWMKEY);
     //FLTPOL disabled; CLPOL disabled; CLSRC FLT1; CLMOD disabled; FLTMOD PWM1H, PWM1L pins to FLTDAT values- Latched; FLTSRC FLT1; 
