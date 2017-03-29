@@ -53,6 +53,9 @@
 */
 void INTERRUPT_Initialize (void)
 {
+    //    CNI: Change Notification Interrupt
+    //    Priority: 1
+        IPC4bits.CNIP = 1;
     //    ICI_INT: Input Compare 1
     //    Priority: 1
         IPC0bits.IC1IP = 1;

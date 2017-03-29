@@ -44,15 +44,16 @@
 */
 
 #include "mcc_generated_files/mcc.h"
-
+#include "axes.h"
 /*
                          Main application
  */
-void main(void)
+int main(void)
 {
     // initialize the device
     SYSTEM_Initialize();
-
+    Initialize_Azimuth();
+            
     // When using interrupts, you need to set the Global Interrupt Enable bits
     // Use the following macros to:
 
@@ -66,6 +67,8 @@ void main(void)
     {
         // Add your application code
     }
+    
+    return 1;  // Should never reach here!
 }
 /**
  End of File

@@ -49,21 +49,23 @@
 #include "pin_manager.h"
 #include <stdint.h>
 #include <stdbool.h>
-#include "ic3.h"
-#include "tmr2.h"
-#include "tmr1.h"
-#include "ic2.h"
-#include "tmr4.h"
-#include "tmr3.h"
-#include "ic4.h"
-#include "pwm.h"
-#include "uart1.h"
-#include "ic1.h"
-#include "i2c1.h"
 #include "traps.h"
 #include "interrupt_manager.h"
+#include "ic4.h"
+#include "ic2.h"
+#include "ic3.h"
+#include "ic1.h"
+#include "pwm.h"
+#include "i2c1.h"
+#include "tmr2.h"
+#include "tmr1.h"
+#include "uart1.h"
+#include "tmr4.h"
+#include "tmr3.h"
 
 #define _XTAL_FREQ  3685000UL
+#define PWMFreq _XTAL_FREQ/64  
+
 
 /**
   Section: Type defines
