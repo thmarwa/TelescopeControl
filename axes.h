@@ -10,6 +10,7 @@
 #define	__AXES_H__
 
 #include <xc.h> // include processor files - each processor file is guarded.  
+#include <string.h> // include spring to allow serial communication processing
 
 // The AzimuthMoveSpeed has the default wait time when a button is pressed
 #define AzimuthMoveSpeed 0.8 * PTPER
@@ -24,11 +25,14 @@
 
 struct Encoder {
     unsigned int mCurrentLocation;
+    unsigned int mDesired;
     bool mPinA;
     bool mPinB;  
 };
 
 void Initialize_Azimuth();
+void SerialInterface();
+char ASCIItoNum(char key);
 extern struct Encoder azimuthEnc;
 extern struct Encoder altitudeEnc;
 extern bool EmergencyOn;

@@ -66,6 +66,7 @@ int main(void)
     while (1)
     {
         // Add your application code
+        SerialInterface();
     }
     
     return 1;  // Should never reach here!
