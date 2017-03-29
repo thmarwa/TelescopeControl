@@ -48,6 +48,8 @@
 */
 #include <xc.h>
 #include "ic2.h"
+#include "../axes.h"
+#include "pin_manager.h"
 
 /**
   IC Mode.
@@ -70,8 +72,8 @@ void IC2_Initialize (void)
 {
     // ICSIDL disabled; ICM Edge Detect Capture; ICTSEL TMR2; ICI Every; 
     IC2CON1 = 0x401;
-    // SYNCSEL TMR2; TRIGSTAT disabled; IC32 disabled; ICTRIG Sync; 
-    IC2CON2 = 0xC;
+    // SYNCSEL TMR1; TRIGSTAT disabled; IC32 disabled; ICTRIG Sync; 
+    IC2CON2 = 0xB;
     
     gIC2Mode = IC2CON1bits.ICM;
     
@@ -85,6 +87,32 @@ void __attribute__ ( ( interrupt, no_auto_psv ) ) _ISR _IC2Interrupt( void )
     if(IFS0bits.IC2IF)
     {
         IFS0bits.IC2IF = 0;
+    }
+
+//    if (I_IC1_GetValue()) { // If Pin A is ON
+//        if (I_IC2_GetValue()) {
+//            // If Pin B is ON, then we are going forwards
+//            azimuthEnc.mCurrentLocation++;
+//        } else {
+//            // If Pin B is OFF, then we are going forwards
+//            azimuthEnc.mCurrentLocation++;
+//        }
+//    } else { // If Pin A is OFF
+//        if (I_IC2_GetValue()) {
+//            // If Pin B is ON, then we are going forwards
+//            azimuthEnc.mCurrentLocation++;
+//        } else {
+//            // If Pin B is OFF, then we are going backwards
+//            azimuthEnc.mCurrentLocation--;
+//        }
+//    }
+    
+    if (I_IC1_GetValue() == I_IC2_GetValue()) {
+    // If Pin A already has the current pin B state, then we are going forwards
+        azimuthEnc.mCurrentLocation++;    
+    } else {
+    // If Pin B is leading Pin A, then we are going backwards
+        azimuthEnc.mCurrentLocation--;   
     }
 }
 void IC2_Start( void )

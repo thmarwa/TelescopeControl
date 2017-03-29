@@ -9,11 +9,14 @@
 #include "mcc_generated_files/mcc.h"
 #include "axes.h"
 
-struct Azimuth azimuth;
+struct Encoder azimuthEnc;
+struct Encoder altitudeEnc;
+
 bool EmergencyOn;
 
 void Initialize_Azimuth() {
-    azimuth.mCurrentLocation = 0;
+    azimuthEnc.mCurrentLocation = 0;
+    altitudeEnc.mCurrentLocation = 0;
     EmergencyOn = false;
     PDC1 = AltitudeUniformSpeed;          // Turn OFF PWM
     IOCON2bits.SWAP = 0;

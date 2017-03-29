@@ -48,6 +48,8 @@
 */
 #include <xc.h>
 #include "ic3.h"
+#include "pin_manager.h"
+#include "../axes.h"
 
 /**
   IC Mode.
@@ -70,18 +72,29 @@ void IC3_Initialize (void)
 {
     // ICSIDL disabled; ICM Edge Detect Capture; ICTSEL TMR3; ICI Every; 
     IC3CON1 = 0x1;
-    // SYNCSEL TMR3; TRIGSTAT disabled; IC32 disabled; ICTRIG Sync; 
-    IC3CON2 = 0xD;
+    // SYNCSEL TMR1; TRIGSTAT disabled; IC32 disabled; ICTRIG Sync; 
+    IC3CON2 = 0xB;
     
     gIC3Mode = IC3CON1bits.ICM;
+    
+    IFS2bits.IC3IF = false;
+    IEC2bits.IC3IE = true;
 }
 
 
-void IC3_Tasks( void )
+void __attribute__ ( ( interrupt, no_auto_psv ) ) _ISR _IC3Interrupt( void )
 {
     if(IFS2bits.IC3IF)
     {
         IFS2bits.IC3IF = 0;
+    }
+    
+    if (I_IC3_GetValue() == I_IC4_GetValue()) {
+    // If Pin B already has the current pin A state, then we are going backwards
+        altitudeEnc.mCurrentLocation--;    
+    } else {
+    // If Pin A is leading Pin B, then we are going forwards
+        altitudeEnc.mCurrentLocation++;
     }
 }
 void IC3_Start( void )

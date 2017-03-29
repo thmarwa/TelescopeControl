@@ -22,12 +22,15 @@
 #define AltitudeUniformSpeed 0
 
 
-struct Azimuth {
+struct Encoder {
     unsigned int mCurrentLocation;
+    bool mPinA;
+    bool mPinB;  
 };
 
 void Initialize_Azimuth();
-extern struct Azimuth azimuth;
+extern struct Encoder azimuthEnc;
+extern struct Encoder altitudeEnc;
 extern bool EmergencyOn;
 
 #endif	/* __AXES_H__ */
