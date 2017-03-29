@@ -51,6 +51,7 @@
 */
 #include <xc.h>
 #include "pin_manager.h"
+#include "../axes.h"
 
 /**
     void PIN_MANAGER_Initialize(void)
@@ -103,5 +104,59 @@ void PIN_MANAGER_Initialize(void)
 
     __builtin_write_OSCCONL(OSCCON | 0x40); // lock   PPS
 
+    /****************************************************************************
+     * Interrupt On Change for group CNENA - any
+     ***************************************************************************/
+    CNENAbits.CNIEA0 = 1; // Pin : RA0 
+    CNENAbits.CNIEA2 = 1; // Pin : RA2
+	CNENAbits.CNIEA3 = 1; // Pin : RA3
+    CNENAbits.CNIEA4 = 1; // Pin : RA4
+
+    /****************************************************************************
+     * Interrupt On Change for group CNENB - any
+     ***************************************************************************/
+	CNENBbits.CNIEB5 = 1; // Pin : RB5
+
+    IEC1bits.CNIE = 1; // Enable CNI interrupt 
 }
 
+bool hala; 
+
+/* Interrupt service routine for the CNI interrupt. */
+void __attribute__ (( interrupt, no_auto_psv )) _CNInterrupt ( void )
+{
+    if(IFS1bits.CNIF == 1)
+    {
+        // Clear the flag
+        IFS1bits.CNIF = 0;
+    }
+    
+    if (I_EmerStop_GetValue()) {
+        EmergencyOn = true;
+        PDC1 = 0;
+        PDC2 = 0;
+        return;
+    }
+    
+    if (I_MCup_GetValue()) { // If the UP Button is Pressed
+        PDC1 = AltitudeMoveSpeed;       // Turn ON PWM1 for 500 ms
+        IOCON1bits.SWAP = 0; // Make it forward-biased (High PWM ON)
+    } else if (I_MCdown_GetValue()) { // If the DOWN Button is Pressed
+        PDC1 = AltitudeMoveSpeed;       // Turn ON PWM1 for 500 ms
+        IOCON1bits.SWAP = 1; // Make it reverse-biased (Low PWM ON)
+    } else {
+        PDC1 = AltitudeUniformSpeed;          // Turn OFF PWM
+    }
+    
+    if (I_MCright_GetValue()) { // If the RIGHT Button is Pressed
+        PDC2 = AzimuthMoveSpeed;       // Turn ON PWM2 based on move value in axes.h
+        IOCON2bits.SWAP = 0; // Make it forward-biased (High PWM ON)
+    } else if (I_MCleft_GetValue()) { // If the LEFT Button is Pressed
+        PDC2 = AzimuthMoveSpeed;       // Turn ON PWM2 based on move value in axes.h
+        IOCON2bits.SWAP = 1; // Make it reverse-biased (Low PWM ON)
+    } else {
+        IOCON2bits.SWAP = 0;
+        PDC2 = AzimuthUniformSpeed;          // Move Azimuth at Uniform Speed
+    }
+    
+}

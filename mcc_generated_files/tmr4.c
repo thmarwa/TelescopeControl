@@ -88,12 +88,14 @@ void TMR4_Initialize (void)
 {
     //TMR4 0; 
     TMR4 = 0x0;
-    //Period = 0 s; Frequency = 1842500 Hz; PR4 0; 
-    PR4 = 0x0;
-    //TCKPS 1:1; T32 16 Bit; TON enabled; TSIDL disabled; TCS FOSC/2; TGATE disabled; 
-    T4CON = 0x8000;
+    //Period = 0.5000162822 s; Frequency = 1842500 Hz; PR4 14395; 
+    PR4 = 0x383B;
+    //TCKPS 1:64; T32 16 Bit; TON enabled; TSIDL disabled; TCS FOSC/2; TGATE disabled; 
+    T4CON = 0x8020;
 
     
+    IFS1bits.T4IF = false;
+    IEC1bits.T4IE = true;
 	
     tmr4_obj.timerElapsed = false;
 
@@ -101,17 +103,22 @@ void TMR4_Initialize (void)
 
 
 
-void TMR4_Tasks_16BitOperation( void )
+void __attribute__ ( ( interrupt, no_auto_psv ) ) _T4Interrupt (  )
 {
     /* Check if the Timer Interrupt/Status is set */
-    if(IFS1bits.T4IF)
-    {
-        tmr4_obj.count++;
-        tmr4_obj.timerElapsed = true;
-        IFS1bits.T4IF = false;
-    }
-}
 
+    //***User Area Begin
+
+    // ticker function call;
+    // ticker is 1 -> Callback function gets called everytime this ISR executes
+    TMR4_CallBack();
+
+    //***User Area End
+
+    tmr4_obj.count++;
+    tmr4_obj.timerElapsed = true;
+    IFS1bits.T4IF = false;
+}
 
 
 void TMR4_Period16BitSet( uint16_t value )
@@ -141,12 +148,19 @@ uint16_t TMR4_Counter16BitGet( void )
 }
 
 
+void __attribute__ ((weak)) TMR4_CallBack(void)
+{
+    // Add your custom callback code here
+    _LATA1 ^= 1;
+}
 
 void TMR4_Start( void )
 {
     /* Reset the status information */
     tmr4_obj.timerElapsed = false;
 
+    /*Enable the interrupt*/
+    IEC1bits.T4IE = true;
 
     /* Start the Timer */
     T4CONbits.TON = 1;
@@ -157,6 +171,8 @@ void TMR4_Stop( void )
     /* Stop the Timer */
     T4CONbits.TON = false;
 
+    /*Disable the interrupt*/
+    IEC1bits.T4IE = false;
 }
 
 bool TMR4_GetElapsedThenClear(void)

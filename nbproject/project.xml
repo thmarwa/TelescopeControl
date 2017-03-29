@@ -6,9 +6,9 @@
             <name>TelescopeControl</name>
             <creation-uuid>a27f7827-962d-405a-b3a1-b67fd5f56678</creation-uuid>
             <make-project-type>0</make-project-type>
-            <c-extensions/>
+            <c-extensions>c</c-extensions>
             <cpp-extensions/>
-            <header-extensions/>
+            <header-extensions>h</header-extensions>
             <asminc-extensions/>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects/>

@@ -48,6 +48,8 @@
 */
 #include <xc.h>
 #include "ic4.h"
+#include "pin_manager.h"
+#include "../axes.h"
 
 /**
   IC Mode.
@@ -70,8 +72,8 @@ void IC4_Initialize (void)
 {
     // ICSIDL disabled; ICM Edge Detect Capture; ICTSEL TMR4; ICI Every; 
     IC4CON1 = 0x801;
-    // SYNCSEL TMR4; TRIGSTAT disabled; IC32 disabled; ICTRIG Sync; 
-    IC4CON2 = 0xE;
+    // SYNCSEL TMR1; TRIGSTAT disabled; IC32 disabled; ICTRIG Sync; 
+    IC4CON2 = 0xB;
     
     gIC4Mode = IC4CON1bits.ICM;
     
@@ -85,6 +87,14 @@ void __attribute__ ( ( interrupt, no_auto_psv ) ) _ISR _IC4Interrupt( void )
     if(IFS2bits.IC4IF)
     {
         IFS2bits.IC4IF = 0;
+    }
+    
+    if (I_IC3_GetValue() == I_IC4_GetValue()) {
+    // If Pin A already has the current pin B state, then we are going forwards
+        altitudeEnc.mCurrentLocation++;
+    } else {
+    // If Pin A is leading Pin B, then we are going forwards
+        altitudeEnc.mCurrentLocation--;
     }
 }
 void IC4_Start( void )

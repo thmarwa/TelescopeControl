@@ -108,38 +108,6 @@
 
 void IC3_Initialize (void);
 
-/**
-  @Summary
-    Maintains the driver's state machine and implements its ISR
-
-  @Description
-    This routine is used to maintain the driver's internal state
-    machine and implement its ISR for interrupt-driven implementations.
-  
-  @Preconditions
-    None.
-
-  @Param
-    None
- 
-  @Returns
-    None.
-
-  @Example
-    <code>
-    while (true)
-    {
-        IC3_Tasks();
-
-        // Do other tasks
-    }
-    </code>
-    
-*/
-
-void IC3_Tasks( void );
-
-
 
 /**
   @Summary
